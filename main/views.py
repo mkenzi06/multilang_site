@@ -122,7 +122,7 @@ def search_view(request):
 # def chatbot_view(request):
 #     user_input = request.POST.get('question', '')
 #     print(user_input)
-#     openai.api_key = "sk-proj-InmbAt7eYVSfjyI3DvGAT3BlbkFJEPD5d1ZKjUpc3BwIgTEQ"
+#     openai.api_key = ""
 #     response = openai.Completion.create(
 #         engine="gpt-3.5-turbo",  
 #         prompt=user_input,
