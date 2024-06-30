@@ -28,7 +28,7 @@ python manage.py runserver
 web: gunicorn multilang_site.wsgi
 
 
-##deploiement sur render
+## deploiement sur render
 Connecter Render à votre dépôt GitHub
 
 Allez sur Render.
