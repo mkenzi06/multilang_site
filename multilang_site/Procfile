@@ -1,1 +1,1 @@
-web: gunicorn multilinguekk.wsgi
+web: gunicorn multilang_sitekm.wsgi
