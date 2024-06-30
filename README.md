@@ -1,1 +1,1 @@
-# multilingue
+# djangomultlingue
