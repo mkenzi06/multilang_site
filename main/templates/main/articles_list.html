@@ -5,18 +5,167 @@
 <head>
     <meta charset="UTF-8">
     <title>{% trans "Blog" %}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        header {
+            background-color: #343a40;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #007bff;
+        }
+        nav ul li {
+            float: left;
+        }
+        nav ul li a {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+        nav ul li a:hover {
+            background-color: #0056b3;
+        }
+        .container {
+            padding: 20px;
+        }
+        .container h1 {
+            font-size: 2em;
+            color: #007bff;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        form input[type="text"] {
+            width: calc(100% - 110px);
+            padding: 10px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        form button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            border: none;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        form button:hover {
+            background-color: #0056b3;
+        }
+        ul#articles {
+            list-style-type: none;
+            padding: 0;
+        }
+        ul#articles li {
+            background-color: white;
+            margin-bottom: 20px;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        ul#articles h2 {
+            margin: 0 0 10px;
+            font-size: 1.5em;
+            color: #343a40;
+        }
+        ul#articles p {
+            margin: 0 0 10px;
+            color: #666;
+        }
+        footer {
+            background-color: #343a40;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+    </style>
+    <script>
+        function searchArticles(event) {
+            event.preventDefault();
+            var query = document.getElementById('query').value;
+            fetch("{% url 'search_view' %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: 'query=' + encodeURIComponent(query)
+            })
+            .then(response => response.json())
+            .then(data => {
+                var responseElement = document.getElementById('articles');
+                responseElement.innerHTML = '';
+                data.response.forEach(article => {
+                    var articleElement = document.createElement('li');
+                    articleElement.innerHTML = `
+                        <h2>${article.title}</h2>
+                        <p>${article.content}</p>
+                        <p>${article.date}</p>
+                    `;
+                    responseElement.appendChild(articleElement);
+                });
+            });
+        }
+    </script>
 </head>
 <body>
-    
-    <h1>{% trans "Blog" %}</h1>
-    <ul>
-        {% for article in articles %}
-            <li>
-                <h2>{{ article.title }}</h2>
-                <p>{{ article.content }}</p>
-                <p>{{ article.date }}</p>
-            </li>
-        {% endfor %}
-    </ul>
+    <header>
+        <h1>{% trans "Blog" %}</h1>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="{% url 'articles_list' %}">{% trans "Articles" %}</a></li>
+            <li><a href="{% url 'chatbot' %}">{% trans "Chatbot" %}</a></li>
+        </ul>
+    </nav>
+    <div class="container">
+        <h1>{% trans "Blog" %}</h1>
+        <form onsubmit="searchArticles(event)">
+            {% csrf_token %}
+            <input type="text" id="query" name="query" placeholder="{% trans 'Rechercher des articles...' %}" required>
+            <button type="submit">{% trans 'Rechercher' %}</button>
+        </form>
+        <ul id="articles">
+            {% for article in articles %}
+                <li>
+                    <h2>{{ article.title }}</h2>
+                    <p>{{ article.content }}</p>
+                    <p>{{ article.date }}</p>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <footer>
+        <form action="{% url 'set_language' %}" method="post">
+            {% csrf_token %}
+            <input name="next" type="hidden" value="{{ request.path }}">
+            <select name="language" onchange="this.form.submit()">
+                {% get_language_info_list for LANGUAGES as languages %}
+                {% for language in languages %}
+                <option value="{{ language.code }}" {% if language.code == LANGUAGE_CODE %}selected{% endif %}>
+                    {{ language.name_local }}
+                </option>
+                {% endfor %}
+            </select>
+        </form>
+    </footer>
 </body>
 </html>

@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-d)6j0l7=6b!ko+wq=&w62rh#5au-io^_@vf6du2s_8k@k&r)xb
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['multilinguekenzi.onrender.com']
 
 
 # Application definition
@@ -54,6 +54,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'multilang_site.urls'
+OPENAI_API_KEY = 'sk-proj-a7sk57GAFZSlYK2ry4uET3BlbkFJH8Jsyfwfto2OAa6vfybT'
 
 TEMPLATES = [
     {
